@@ -1,0 +1,554 @@
+<!--
+    A description of the adaptive area light sampler used in Funtracer.
+    Copyright (c) 2019 Alessandro Scotti
+
+    Released under Creative Common's Attribution 4.0 International (CC BY 4.0) license, see:
+    https://creativecommons.org/licenses/by/4.0/
+-->
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Adaptive Area Light Sampling</title>
+    <meta charset="UTF-8">
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: HelveticaNeue, sans-serif;
+    font-size: large;
+    margin: 0;
+    background: lightgray;
+}
+
+figure, figcaption, img {
+    display: block; 
+}
+
+.container {
+    width: 960px;
+    margin: auto;
+    padding: 1em;
+    background: white;
+}
+
+h1 {
+    margin-bottom: 0.1em;
+}
+
+.demo-container {
+    text-align: center;
+}
+
+.demo {
+    border: 1px solid gray;
+    display: inline-block;
+    margin: auto;
+    padding: 1em;
+    background: #f0f0f0;
+}
+
+.demo > canvas {
+    width: 400px;
+    height: 400px;
+}
+
+.demo > div {
+    margin-bottom: 0.5em;
+}
+
+.demo select + label {
+    margin-left: 1em;
+}
+
+.img {
+    width: 820px;
+    margin: 1.5em auto;
+    text-align: center;
+}
+
+.img > img {
+    border: 1px solid gray;
+}
+
+.img > figcaption {
+    margin-top: 0.2em;
+    font-style: italic;
+}
+
+@media only screen and (max-width: 960px) {
+    body {
+        font-size: normal;
+        background: white;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    .demo {
+        padding: 6px;
+    }
+}
+
+@media only screen and (max-width: 820px) {
+    .container {
+        padding: 0;
+    }
+
+    .img {
+        width: 100%;
+    }
+
+    .img > img {
+        width: 100%;
+        border: none;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .demo > canvas {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+</style>    
+<script>
+function update() {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var cw = Math.max(300, canvas.clientWidth+2);
+    var ch = Math.max(300, canvas.clientHeight+2);
+
+    ctx.canvas.width = cw;
+    ctx.canvas.height = ch;
+
+    console.log("c: ", cw, ch, canvas.style);
+    
+    var img_data; // Canvas data, used to sample the shape
+
+    var num_samples = 0; // How many samples are used to estimate the area of the shape
+
+    // Get one pixel from the canvas test data, returns 1 if pixel is set, 0 otherwise
+    function getPixel( x, y ) {
+        x = x|0
+        y = y|0
+        var o = 4*(x + y*cw);
+        
+        return img_data[o+0] + img_data[o+1] + img_data[o+2] != 255*3 /* white */ ? 1 : 0
+    }
+    
+    // Compute the shape area counting set pixels one by one
+    function computeArea() {
+        var a = 0
+        
+        for( var x=0; x<cw; x++ ) {
+            for( var y=0; y<ch; y++ ) {
+                a += getPixel(x, y) 
+            }
+        }
+        
+        return a / cw / ch;
+    }
+    
+    // Sample one point at normalized coordinates (u,v)
+    function sample(u, v) {
+        var x = u * (cw - 1);
+        var y = v * (ch - 1);
+
+        // This is just for visualizing the sample on the canvas
+        ctx.fillStyle = "blue";
+        ctx.fillRect(Math.min(x,cw-2), Math.min(y,ch-2), 2, 2);
+
+        num_samples++;
+
+        return getPixel(x, y) ? 1 : 0;
+    }
+    
+    // Canvas utilities
+    function rect(x, y, w, h) {
+        ctx.fillRect(x, y, w, h);
+    }
+
+    function circle(x, y, r) {
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, r, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+
+    function poly(x0, y0, x1, y1, x2, y2) {
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.fill();
+    }
+
+    // Draw test data
+    ctx.beginPath();
+    ctx.fillStyle = "white";
+    rect(0, 0, cw, ch);
+
+    ctx.fillStyle = "#ffaaaa";
+
+    switch( document.getElementById("testdata").value ) {
+    case "half_v":
+        rect(cw / 2, 0, cw, ch);
+        break;
+    case "half_d":
+        poly(0, 0, cw, ch, 0, ch);
+        break;
+    case "circle":
+        circle(cw/2, ch/2, cw/3);
+        break;
+    case "q_circle":
+        circle(0, 0, cw);
+        break;
+    case "triangle":
+        poly(0, 0, cw/2, ch/2, cw, 0);
+        break;
+    case "band":
+        rect(cw/3, 0, cw/3, ch);
+        break;
+    case "peak":
+        poly(0, 0, cw / 3, 0, 2*cw / 3, ch);
+        break;
+    case "diag":
+        rect(0, 0, cw / 3 + 1, ch )
+        poly(cw / 3, 0, 2 * cw / 3, ch, cw / 3, ch);
+        break;
+    }
+    
+    // Freeze image data so we can overwrite canvas if needed
+    img_data = ctx.getImageData(0, 0, cw, ch).data; 
+
+    // Get parameters
+    var MinDepth = parseInt(document.getElementById("mindepth").value,10);
+    var MaxDepth = parseInt(document.getElementById("maxdepth").value,10) + MinDepth;
+    var UseHeuristics = document.getElementById("heuristics").checked;
+
+    // Estimates the area of the given rectangle.
+    // u, v: normalized coordinates of rectangle top left corner (0 <= u <= 1, 0 <= v <= 1)
+    // w, h: width and heigth of rectangle
+    // p0, p1, p3, p3: samples at the rectangle corners (passed as parameters because they can be reused)
+    // depth: number of splits
+    // confidence: 1 if all samples so far have the same value, indicating a "flat" area, 0 otherwise
+    //
+    // Names of sampling points (not necessarily used):
+    // p0 -- pa -- p1
+    // |            |
+    // pb          pd
+    // |            |
+    // p2 -- pe -- p3
+    function estimateArea(u, v, w, h, p0, p1, p2, p3, depth, confidence) {
+        var ok = p0 == p1 && p0 == p2 && p0 == p3;
+
+        confidence++;        
+        if( !ok ) {
+            confidence = 0;
+        }
+        
+        if(UseHeuristics && confidence >= 3) { // Performance heuristic
+            depth = MaxDepth;
+        }
+        
+        if( depth >= MaxDepth || (ok && depth >= MinDepth) ) {
+            // We reached a leaf and need to exit
+            var s = p0 + p1 + p2 + p3;
+            
+            if( UseHeuristics ) { // Quality heuristic
+                if (s != 2) {
+                    return s * w * h / 4;
+                }
+
+                return (s + 4 * sample(u + w / 2, v + h / 2)) * w * h / 8;
+            }
+
+            return s * w * h / 4;
+        }
+        else {
+            // Split the rectangle vertically or horizontally
+            if( w > h || (w == h && p0 == p2) ) {
+                w = w / 2;
+                var pa = sample(u+w, v);
+                var pe = sample(u+w, v+h);
+                var a1 = estimateArea(u, v,   w, h, p0, pa, p2, pe, depth+1, confidence);
+                var a2 = estimateArea(u+w, v, w, h, pa, p1, pe, p3, depth+1, confidence);
+                return a1+a2;
+            }
+            else {
+                h = h / 2;
+                var pb = sample(u,   v+h);
+                var pd = sample(u+w, v+h);
+                var a3 = estimateArea(u, v,   w, h, p0, p1, pb, pd, depth+1, confidence);
+                var a4 = estimateArea(u, v+h, w, h, pb, pd, p2, p3, depth+1, confidence);
+                return a3+a4;
+            }
+        }
+    }
+    
+    var estArea = estimateArea( 0, 0, 1, 1, sample(0,0), sample(1,0), sample(0,1), sample(1,1), 0, 0 );
+
+    // Update summary
+    var area = computeArea();
+    var err = 0;
+    
+    if( area != 0 ) {
+        err = (100 * Math.abs(1 - estArea / area)).toFixed(2)        
+    }
+    
+    document.getElementById("summary").innerHTML = 
+        "Sampled points = " + num_samples + " (" + (100 * num_samples / cw / ch).toFixed(3) + "% of total) <br>" +
+        "Est. area = " + estArea.toFixed(3) + " (truth=" + area.toFixed(3) + "), error: " + err + "%";
+}
+
+window.onload = function() {
+    // Init depth selectors
+    var minsel = document.getElementById("mindepth")
+    var maxsel = document.getElementById("maxdepth")
+    for( var d=0; d<=7; d++ ) {
+        minsel.options[minsel.options.length] = new Option(d, d);
+        maxsel.options[maxsel.options.length] = new Option("min + " +d, d);
+    }
+
+    minsel.selectedIndex = 5;
+    maxsel.selectedIndex = 4;
+
+    // Go!
+    update();
+};
+</script>    
+</head>
+<body>
+    <div class="container">
+
+<div class="text">
+    <h1>Adaptive Area Light Sampling</h1>
+
+    <div class="author">by Alessandro Scotti (February 10, 2019)</div>
+
+    <p>Area lights are a great addition to a recursive raytracer. They are not hard to implement and 
+    greatly improve image quality and realism. 
+    However, they do come at a cost. Because the light is no longer a single point, 
+    getting the amount of light that hits a point on a surface requires computing the area of 
+    the part of the light that is not in shadow, i.e. that is visible from the surface.
+
+    <p>This problem cannot be solved analytically so a common approach is to sample the light in different 
+    points and then average the results.
+
+    <p>The method used to sample the light has a direct influence on two factors: the appearance of the shadow and 
+    the rendering time.
+    Using less samples reduces rendering time, but may increase noise and other visual artifacts. 
+    The idea then is to try and spend these samples wisely.
+
+    <h2>Stratified sampling</h2>
+
+    <p>A common approach that works well in practice is a <em>jittered stratified</em> sampler,
+    which divides the area in a M x N grid and then samples one random point inside each grid cell.
+
+    <p>Sampling in random points replaces <em>banding</em> with noise, which is less
+    annoying to our vision.
+
+    <p>The disadvantage is that for difficult shadows it may be necessary to use a lot of samples to
+    get a good result. The following scene shows the case.
+
+    <figure class="img">
+        <img src="test_obj_teapot_js8x8_10s.png" alt="Test image shows very noisy shadow">
+        <figcaption>8x8 jittered stratified, 10 seconds: quite noisy</figcaption>
+    </figure>
+    
+    <figure class="img">
+        <img src="test_obj_teapot_js12x12_21.5s.png" alt="Test image show quite noisy shadow">
+        <figcaption>12x12 jittered stratified, 21.5 seconds: less noisy but still</figcaption>
+    </figure>
+    
+    <figure class="img">
+        <img src="test_obj_teapot_js16x16_37.5s.png" alt="Test image shows O.K. shadow but some noise is still there">
+        <figcaption>16x16 jittered stratified, 37.5 seconds: almost there</figcaption>
+    </figure>
+    
+    <p>The trickiest spot in this scene is the small shadow arc just under the spout, it's still showing
+    noise and artifacts even when the light is sampled with 256 rays!
+
+    <h2>Adaptive sampling</h2>
+
+    <p>Adaptive sampling tries to handle the issue by "exploring" the area gradually and focusing more on
+    the parts that seem to have more variance.
+
+    <p>The method described here is what I'm using in <a href="https://ascottix.github.io/funtracer/index.html">Funtracer</a>,
+    my toy recursive raytracer.
+
+    <p>I don't remember how I stumbled onto <a href="http://www.povray.org/documentation/view/3.6.0/313/">POV-Ray's documentation on Area Lights</a>,
+    but the core idea is perfectly described there: split the area in smaller rectangles and evaluate their
+    corners, then split some more if the corners show too different values, indicating high variance.
+
+    <p>The splitting process is controlled by two important parameters: minimum depth and maximum depth.
+
+    <p>Minimum depth is the minimum amount of splitting that needs to be done before the adaptive part
+    kicks in. It makes sure that decisions are based on enough actual data.
+
+    <p>Maximum depth sets a limit for the splitting process, preventing it from going on for too long
+    when little or no improvement would show up in the final result.
+
+    <p>A quick JavaScript prototype convinced me that the method works well and is simple enough to be
+    implemented in Funtracer. What follows are my attempts at improving (or ruining...) it.
+
+    <p>In fact, before we begin, it may be useful to play a little bit with the algorithm and visualize
+    what it does, so here it is.
+    Try different shapes and play a bit with the parameters too!
+
+    <!-- Demo widget -->
+    <div class="demo-container">
+        <div class="demo">
+            <div>
+                <!-- Predefined set of test data -->
+                <label for="testdata">Shape: </label>
+                <select id="testdata" onchange="update()">
+                    <option value="empty">Empty</option>
+                    <option value="half_v" selected>Half Vertical</option>
+                    <option value="half_d">Half Diagonal</option>
+                    <option value="circle">Circle</option>
+                    <option value="q_circle">Quarter Circle</option>
+                    <option value="triangle">Triangle</option>
+                    <option value="band">Band</option>
+                    <option value="diag">Diagonal</option>
+                    <option value="peak">Peak</option>
+                </select>
+            </div>
+        
+            <div>
+                <!-- Min depth -->
+                <label for="mindepth">Min Depth:</label>
+                <select id="mindepth" onchange="update()"></select>
+        
+                <!-- Max depth -->
+                <label for="maxdepth">Max:</label>
+                <select id="maxdepth" onchange="update()"></select>
+            </div>
+        
+            <div>
+                <!-- Use heuristics -->
+                <label for="heuristics">Heuristics:</label>
+                <input id="heuristics" type="checkbox" checked onchange="update()">
+            </div>
+        
+            <div id="summary">
+            </div>
+        
+            <!-- Canvas where test shape and sampled points are drawn -->
+            <canvas id="canvas" style="border:1px solid #f0f0f0;"></canvas>
+        </div>
+    </div> <!-- demo container -->
+
+    <p>Hope that was fun! Let's view the heuristics now.
+
+    <h3>Splitting in half</h3>
+
+    <p>Splitting a rectangle in half, rather than in quarters, reduces significantly the numbers of samples used,
+    and does not have as great an impact on the quality of the result.
+
+    <p>The split always occurs in the middle of the longest edge.
+
+    <p>If the two edges are of same length,
+    the algorithm takes a look at the corners and tries to keep similar samples together. For example,
+    if there is a square where the top two corners hit the surface but the bottom two points are shadowed,
+    then a horizontal split is a better choice because it tends to create uniform areas that could
+    be optimized away further on.
+
+    <h3>Spending an extra sample</h3>
+
+    <p>The value assigned to a rectangle is just the sum of the corner values, weighted by the area of
+    the rectangle. But when the corner values are split exactly in half (two giving light and two giving
+    shadows) then the result is often inaccurate. In this case, an extra sample is used in the
+    center of the rectangle and the final result is a weighted sum of this center sample and the four corners.
+
+    <h3>Early exit</h3>
+
+    <p>The algorithm keeps track of how many splits have been performed with all corners in agreement.
+    If this number is large enough, giving confidence that we're inside a zone with small variation,
+    it may trigger an early exit before the minimum depth is reached.
+
+    <p>This heuristic works well in practice, cutting in half the rendering time of several scenes. However,
+    it is best applied to the initial splits only. When the algorithms wants to dive deeper and chase zones of 
+    high variance then it's better to let it go.
+
+    <h3>Depth reduction</h3>
+
+    <p>Before starting the splitting process, let's pause a moment and ask a question.
+    How much important is this light for the final point color?
+
+    <p>For example, if the angle between the area light and the surface normal is very small,
+    then the light contribution to the diffuse component of the color is small as well.
+
+    <p>Trying to use the available information, the algorithm performs an initial estimation of the
+    light <em>influence</em> on the final point color. If the light contribution does not seem so 
+    important for the color appearance, then the algorithm will reduce the minimum and maximum 
+    depth in order to save time.
+
+    <p>There is more work to do here, but so far the idea seems to work well!
+
+    <h3>Show us or it didn't happen</h3>
+
+    <p>Of course! :-) Here we go!
+
+    <figure class="img">
+        <img src="test_obj_teapot_5_9_all_heuristics_8.5s.png" alt="Test image shows hard shadow">
+        <figcaption>5/9 adaptive, 8.5 seconds: not enough depth to resolve the tough part</figcaption>
+    </figure>
+    
+    <figure class="img">
+        <img src="test_obj_teapot_7_9_no_heuristics_41s.png" alt="Test image shows good shadow">
+        <figcaption>7/9 adaptive with all heuristics disabled, 41 seconds: good</figcaption>
+    </figure>
+    
+    <figure class="img">
+        <img src="test_obj_teapot_7_9_all_heuristics_17.7s.png" alt="Test image shows good shadow in spite of faster rendering">
+        <figcaption>7/9 adaptive (heuristics on), 17.7 seconds: good</figcaption>
+    </figure>
+
+    <figure class="img">
+        <img src="test_7_9_all_heuristics_17.7s_vs_js16x16_37.5s.png" alt="Test image shows O.K. shadow with some leftover noise">
+        <figcaption>7/9 adaptive, heuristics on (left) vs. 16x16 jittered stratified (right)</figcaption>
+    </figure>
+
+    <p>The following scenes are rendered with the default settings, 5/9 adaptive and all heuristics on, 
+    unless otherwise noted.
+
+    <figure class="img">
+        <img src="test_obj_teapot_full_5_9_all_heuristics_3.4s.png" alt="Test image of full teapot shows good shadow">
+        <figcaption>Full teapot, 3.4 seconds: much faster to render because shadows are only a fraction of the scene</figcaption>
+    </figure>
+
+    <figure class="img">
+        <img src="test_rect_light_5_9_all_heuristics_2.3s.png" alt="Test image with spheres and cylinders shows good shadow but wrong specular highlight">
+        <figcaption>Balls and cylinder, 2.3 seconds: good shadows but not enough resolution to render the large specular 
+            highlight on the front ball</figcaption>
+    </figure>
+
+    <figure class="img">
+        <img src="test_rect_light_7_9_all_heuristics_4.7s.png" alt="Test image with spheres and cylinders shows no defects">
+        <figcaption>Balls and cylinder, 7/9 adaptive, 4.7 seconds: issue fixed by increasing the minimum depth a little</figcaption>
+    </figure>
+
+    <h2>Conclusions</h2>
+
+    <p>The algorithm presented here is simple (less then 40 lines of JavaScript, embedded in this page)
+    and performs well in practice. 
+    
+    <p><a href="https://ascottix.github.io/funtracer/index.html">Funtracer's</a> default settings of
+    5 and 9 for minimum and maximum depth produce good results in most situations, while still keeping
+    rendering times very acceptable.
+
+    <p>The parameters are also not too difficult to tune. As a rule of thumb, increase the minimum depth
+    to fix hard shadows and the maximum depth to fix banding. Heuristics may be also slightly
+    adjusted. Getting good parameters for a scene is important as it saves a lot of time when 
+    rendering the final image with supersampling. But make sure to work at the final resolution.
+
+    <p>Anyway, that's all I have on this... it ain't much, but it's honest work! :-)
+</div>
+
+    </div> <!-- container -->
+</body>
+</html>
