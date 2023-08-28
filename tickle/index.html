@@ -1,532 +1,558 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
-<title>Tickle, an arcade machine emulator</title>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<style>
-body {
-	font-size: 16px;
-}
+	<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+	<title>Tickle</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style>
+		body {
+			font-size: 16px;
+		}
 
-th {
-    cursor: pointer;
-}
+		th {
+			cursor: pointer;
+		}
 
-h1.title {
-    font-size:100px;
-    font-weight:bold;
-    margin-top:0;
-}
+		h1.title {
+			font-size: 100px;
+			font-weight: bold;
+			margin-top: 0;
+		}
 
-h1.title span {
-    margin-right: 0.2em;
-}
+		h1.title span {
+			margin-right: 0.2em;
+		}
 
-h2 {
-    font-size:24px;
-}
+		h2 {
+			font-size: 24px;
+		}
 
-pre {
-    background-color: white;
-}
+		pre {
+			background-color: white;
+		}
 
-.screenshots img {
-	border: 1px solid gray;
-	width: 224px;
-	height: 288px;
-	margin: 24px 64px 24px 0;
-}
+		.screenshots img {
+			border: 1px solid gray;
+			width: 224px;
+			height: 288px;
+			margin: 24px 64px 24px 0;
+		}
 
-.screenshots img.portrait {
-	width: 288px;
-	height: 224px;
-}
-</style>
+		.screenshots img.portrait {
+			width: 288px;
+			height: 224px;
+		}
+	</style>
 
-<script>
-var Drivers094 = [
-	{
-		"driver": "1942",
-		"name": "1942",
-		"manufacturer": "Taito",
-		"resources": ["1942"],
-		"year": 1984,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "amidars",
-		"name": "Amidar (on Scramble hardware)",
-		"manufacturer": "Konami",
-		"resources": ["amidars", "amidar", "scramble"],
-		"year": 1982,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "atlantis",
-		"name": "Battle of Atlantis",
-		"manufacturer": "Comsoft",
-		"resources": ["atlantis", "scramble"],
-		"year": 1981,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "blkhole",
-		"name": "Black Hole",
-		"manufacturer": "TDS",
-		"resources": ["blkhole", "galaxian"],
-		"year": 1981,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "crush",
-		"name": "Crush Roller",
-		"manufacturer": "Kural Samno Electric",
-		"resources": ["crush", "puckman"],
-		"year": 1981,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "eyes",
-		"name": "Eyes",
-		"manufacturer": "Rock-Ola",
-		"resources": ["eyes", "puckman"],
-		"year": 1982,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "fantasyu",
-		"name": "Fantasy (US)",
-		"manufacturer": "Rock-Ola",
-		"resources": ["fantasyu", "fantasy", "nibbler"],
-		"year": 1981,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "frogger",
-		"name": "Frogger",
-		"manufacturer": "Konami",
-		"resources": ["frogger"],
-		"year": 1981,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "galaga",
-		"name": "Galaga",
-		"manufacturer": "Namco",
-		"resources": ["galaga"],
-		"year": 1981,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "galaxian",
-		"name": "Galaxian",
-		"manufacturer": "Namco",
-		"resources": ["galaxian"],
-		"year": 1979,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "gteikoku",
-		"name": "Gingateikoku No Gyakushu",
-		"manufacturer": "Irem",
-		"resources": ["gteikoku", "uniwars", "galaxian"],
-		"year": 1980,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "jumpshot",
-		"name": "Jump Shot",
-		"manufacturer": "Bally Midway",
-		"resources": ["jumpshot", "puckman"],
-		"year": 1985,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "lrescue",
-		"name": "Lunar Rescue",
-		"manufacturer": "Taito",
-		"resources": ["lrescue", "invaders"],
-		"year": 1979,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "maketrax",
-		"name": "Make Trax",
-		"manufacturer": "Williams Electronics",
-		"resources": ["maketrax", "crush", "puckman"],
-		"year": 1981,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "mars",
-		"name": "Mars",
-		"manufacturer": "Artic",
-		"resources": ["mars", "scramble"],
-		"year": 1981,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "mooncrst",
-		"name": "Moon Cresta",
-		"manufacturer": "Nichibutsu",
-		"resources": ["mooncrst", "galaxian"],
-		"year": 1980,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "mspacman",
-		"name": "Ms. Pacman",
-		"manufacturer": "Midway",
-		"resources": ["mspacman", "pacman", "puckman"],
-		"year": 1981,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "nrallyx",
-		"name": "New Rally X",
-		"manufacturer": "Namco",
-		"resources": ["nrallyx", "rallyx"],
-		"year": 1981,
-		"width": 288,
-		"height": 224
-	},
-	{
-		"driver": "nibbler",
-		"name": "Nibbler",
-		"manufacturer": "Rock-Ola",
-		"resources": ["nibbler"],
-		"year": 1982,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "ozmawars",
-		"name": "Ozma Wars",
-		"manufacturer": "SNK",
-		"resources": ["ozmawars", "invaders"],
-		"year": 1979,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "pacman",
-		"name": "Pacman",
-		"manufacturer": "Midway",
-		"resources": ["pacman", "puckman"],
-		"year": 1980,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "pacplus",
-		"name": "Pacman Plus",
-		"manufacturer": "Midway",
-		"resources": ["pacplus", "puckman"],
-		"year": 1982,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "pengo2u",
-		"name": "Pengo (set 2 not encrypted)",
-		"manufacturer": "Sega",
-		"resources": ["pengo2u", "pengo"],
-		"year": 1982,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "pbaction",
-		"name": "Pinball Action",
-		"manufacturer": "Tehkan",
-		"resources": ["pbaction"],
-		"year": 1985,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "pooyan",
-		"name": "Pooyan",
-		"manufacturer": "Konami",
-		"resources": ["pooyan"],
-		"year": 1982,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "puckman",
-		"name": "Puckman",
-		"manufacturer": "Namco",
-		"resources": ["puckman"],
-		"year": 1980,
-		"width": 224,
-		"height": 288
-	},
-	{
-		"driver": "rallyx",
-		"name": "Rally X",
-		"manufacturer": "Namco",
-		"resources": ["rallyx"],
-		"year": 1980,
-		"width": 288,
-		"height": 224
-	},
-	{
-		"driver": "rollingc",
-		"name": "Rolling Crash / Moon Base",
-		"manufacturer": "Nichibutsu",
-		"resources": ["rollingc", "invaders"],
-		"year": 1979,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "scramble",
-		"name": "Scramble",
-		"manufacturer": "Konami",
-		"resources": ["scramble"],
-		"year": 1981,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "spaceat2",
-		"name": "Space Attack II",
-		"manufacturer": "Zenitone-Microsec LTD",
-		"resources": ["spaceat2", "invaders"],
-		"year": 1980,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "invaders",
-		"name": "Space Invaders",
-		"manufacturer": "Taito",
-		"resources": ["invaders"],
-		"year": 1979,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "invaddlx",
-		"name": "Space Invaders Deluxe",
-		"manufacturer": "Midway",
-		"resources": ["invaddlx", "invadpt2", "invaders"],
-		"year": 1979,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "invadpt2",
-		"name": "Space Invaders Part II",
-		"manufacturer": "Taito",
-		"resources": ["invadpt2", "invaders"],
-		"year": 1979,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "theend",
-		"name": "The End",
-		"manufacturer": "Konami",
-		"resources": ["theend", "scramble"],
-		"year": 1980,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "uniwars",
-		"name": "UniWar S",
-		"manufacturer": "Irem",
-		"resources": ["uniwars", "galaxian"],
-		"year": 1980,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "vanguard",
-		"name": "Vanguard",
-		"manufacturer": "SNK",
-		"resources": ["vanguard"],
-		"year": 1981,
-		"width": 224,
-		"height": 256
-	},
-	{
-		"driver": "warofbug",
-		"name": "War of the Bugs",
-		"manufacturer": "Armenia",
-		"resources": ["warofbug", "galaxian"],
-		"year": 1981,
-		"width": 224,
-		"height": 256
-	}
-];
+	<script>
+		var Drivers094 = [
+			{
+				"driver": "1942",
+				"name": "1942",
+				"manufacturer": "Taito",
+				"resources": ["1942"],
+				"year": 1984,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "amidars",
+				"name": "Amidar (on Scramble hardware)",
+				"manufacturer": "Konami",
+				"resources": ["amidars", "amidar", "scramble"],
+				"year": 1982,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "atlantis",
+				"name": "Battle of Atlantis",
+				"manufacturer": "Comsoft",
+				"resources": ["atlantis", "scramble"],
+				"year": 1981,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "blkhole",
+				"name": "Black Hole",
+				"manufacturer": "TDS",
+				"resources": ["blkhole", "galaxian"],
+				"year": 1981,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "crush",
+				"name": "Crush Roller",
+				"manufacturer": "Kural Samno Electric",
+				"resources": ["crush", "puckman"],
+				"year": 1981,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "eyes",
+				"name": "Eyes",
+				"manufacturer": "Rock-Ola",
+				"resources": ["eyes", "puckman"],
+				"year": 1982,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "fantasyu",
+				"name": "Fantasy (US)",
+				"manufacturer": "Rock-Ola",
+				"resources": ["fantasyu", "fantasy", "nibbler"],
+				"year": 1981,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "frogger",
+				"name": "Frogger",
+				"manufacturer": "Konami",
+				"resources": ["frogger"],
+				"year": 1981,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "galaga",
+				"name": "Galaga",
+				"manufacturer": "Namco",
+				"resources": ["galaga"],
+				"year": 1981,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "galaxian",
+				"name": "Galaxian",
+				"manufacturer": "Namco",
+				"resources": ["galaxian"],
+				"year": 1979,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "gteikoku",
+				"name": "Gingateikoku No Gyakushu",
+				"manufacturer": "Irem",
+				"resources": ["gteikoku", "uniwars", "galaxian"],
+				"year": 1980,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "jumpshot",
+				"name": "Jump Shot",
+				"manufacturer": "Bally Midway",
+				"resources": ["jumpshot", "puckman"],
+				"year": 1985,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "lrescue",
+				"name": "Lunar Rescue",
+				"manufacturer": "Taito",
+				"resources": ["lrescue", "invaders"],
+				"year": 1979,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "maketrax",
+				"name": "Make Trax",
+				"manufacturer": "Williams Electronics",
+				"resources": ["maketrax", "crush", "puckman"],
+				"year": 1981,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "mars",
+				"name": "Mars",
+				"manufacturer": "Artic",
+				"resources": ["mars", "scramble"],
+				"year": 1981,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "mooncrst",
+				"name": "Moon Cresta",
+				"manufacturer": "Nichibutsu",
+				"resources": ["mooncrst", "galaxian"],
+				"year": 1980,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "mspacman",
+				"name": "Ms. Pacman",
+				"manufacturer": "Midway",
+				"resources": ["mspacman", "pacman", "puckman"],
+				"year": 1981,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "nrallyx",
+				"name": "New Rally X",
+				"manufacturer": "Namco",
+				"resources": ["nrallyx", "rallyx"],
+				"year": 1981,
+				"width": 288,
+				"height": 224
+			},
+			{
+				"driver": "nibbler",
+				"name": "Nibbler",
+				"manufacturer": "Rock-Ola",
+				"resources": ["nibbler"],
+				"year": 1982,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "ozmawars",
+				"name": "Ozma Wars",
+				"manufacturer": "SNK",
+				"resources": ["ozmawars", "invaders"],
+				"year": 1979,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "pacman",
+				"name": "Pacman",
+				"manufacturer": "Midway",
+				"resources": ["pacman", "puckman"],
+				"year": 1980,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "pacplus",
+				"name": "Pacman Plus",
+				"manufacturer": "Midway",
+				"resources": ["pacplus", "puckman"],
+				"year": 1982,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "pengo2u",
+				"name": "Pengo (set 2 not encrypted)",
+				"manufacturer": "Sega",
+				"resources": ["pengo2u", "pengo"],
+				"year": 1982,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "pbaction",
+				"name": "Pinball Action",
+				"manufacturer": "Tehkan",
+				"resources": ["pbaction"],
+				"year": 1985,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "pooyan",
+				"name": "Pooyan",
+				"manufacturer": "Konami",
+				"resources": ["pooyan"],
+				"year": 1982,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "puckman",
+				"name": "Puckman",
+				"manufacturer": "Namco",
+				"resources": ["puckman"],
+				"year": 1980,
+				"width": 224,
+				"height": 288
+			},
+			{
+				"driver": "rallyx",
+				"name": "Rally X",
+				"manufacturer": "Namco",
+				"resources": ["rallyx"],
+				"year": 1980,
+				"width": 288,
+				"height": 224
+			},
+			{
+				"driver": "rollingc",
+				"name": "Rolling Crash / Moon Base",
+				"manufacturer": "Nichibutsu",
+				"resources": ["rollingc", "invaders"],
+				"year": 1979,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "scramble",
+				"name": "Scramble",
+				"manufacturer": "Konami",
+				"resources": ["scramble"],
+				"year": 1981,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "spaceat2",
+				"name": "Space Attack II",
+				"manufacturer": "Zenitone-Microsec LTD",
+				"resources": ["spaceat2", "invaders"],
+				"year": 1980,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "invaders",
+				"name": "Space Invaders",
+				"manufacturer": "Taito",
+				"resources": ["invaders"],
+				"year": 1979,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "invaddlx",
+				"name": "Space Invaders Deluxe",
+				"manufacturer": "Midway",
+				"resources": ["invaddlx", "invadpt2", "invaders"],
+				"year": 1979,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "invadpt2",
+				"name": "Space Invaders Part II",
+				"manufacturer": "Taito",
+				"resources": ["invadpt2", "invaders"],
+				"year": 1979,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "theend",
+				"name": "The End",
+				"manufacturer": "Konami",
+				"resources": ["theend", "scramble"],
+				"year": 1980,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "uniwars",
+				"name": "UniWar S",
+				"manufacturer": "Irem",
+				"resources": ["uniwars", "galaxian"],
+				"year": 1980,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "vanguard",
+				"name": "Vanguard",
+				"manufacturer": "SNK",
+				"resources": ["vanguard"],
+				"year": 1981,
+				"width": 224,
+				"height": 256
+			},
+			{
+				"driver": "warofbug",
+				"name": "War of the Bugs",
+				"manufacturer": "Armenia",
+				"resources": ["warofbug", "galaxian"],
+				"year": 1981,
+				"width": 224,
+				"height": 256
+			}
+		];
 
-function sort(col) {
-    var rows = document.getElementById("drivers").rows;
+		function sort(col) {
+			var rows = document.getElementById("drivers").rows;
 
-    do {
-        var swapped = false;
+			do {
+				var swapped = false;
 
-        for( var i=2; i<rows.length; i++ ) {
-            var r1 = rows[i-1];
-            var r2 = rows[i];
-            if( (r1.cells[col].innerHTML > r2.cells[col].innerHTML) || ((r1.cells[col].innerHTML == r2.cells[col].innerHTML) && (r1.cells[0].innerHTML > r2.cells[0].innerHTML)) ) {
-                r1.parentNode.removeChild( r2 );
-                r1.parentNode.insertBefore( r2, r1 );
-                swapped = true;
-            }
-        }
-    } while( swapped );
-}
+				for (var i = 2; i < rows.length; i++) {
+					var r1 = rows[i - 1];
+					var r2 = rows[i];
+					if ((r1.cells[col].innerHTML > r2.cells[col].innerHTML) || ((r1.cells[col].innerHTML == r2.cells[col].innerHTML) && (r1.cells[0].innerHTML > r2.cells[0].innerHTML))) {
+						r1.parentNode.removeChild(r2);
+						r1.parentNode.insertBefore(r2, r1);
+						swapped = true;
+					}
+				}
+			} while (swapped);
+		}
 
-function addCell( tr, html ) {
-    var td = tr.insertCell(-1);
-    td.innerHTML = html;
-}
+		function addCell(tr, html) {
+			var td = tr.insertCell(-1);
+			td.innerHTML = html;
+		}
 
-function populateDriversTable() {
-    var table = document.getElementById("drivers");
+		function populateDriversTable() {
+			var table = document.getElementById("drivers");
 
-    for( var i=0; i<Drivers094.length; i++ ) {
-        var d = Drivers094[i];
+			for (var i = 0; i < Drivers094.length; i++) {
+				var d = Drivers094[i];
 
-        var tr = table.insertRow(-1);
-        addCell( tr, d.name );
-        addCell( tr, d.manufacturer )
-        addCell( tr, d.year );
-        addCell( tr, d.width + "x" + d.height );
-        addCell( tr, d.resources.join(".zip, ")+".zip" );
-    }
-}
+				var tr = table.insertRow(-1);
+				addCell(tr, d.name);
+				addCell(tr, d.manufacturer)
+				addCell(tr, d.year);
+				addCell(tr, d.width + "x" + d.height);
+				addCell(tr, d.resources.join(".zip, ") + ".zip");
+			}
+		}
 
-function onDocumentReady() {
-    populateDriversTable();
-}
+		function onDocumentReady() {
+			populateDriversTable();
+		}
 
-window.onload = onDocumentReady;
-</script>
+		window.onload = onDocumentReady;
+	</script>
 
 </head>
+
 <body>
 
-<div class="container">
+	<div class="container">
 
-<div class="row">
-    <div style="text-align:center">
-        <h1 class="title">
-        <!-- text-outline is not supported yet... use a trick with text-shadow -->
-        <span style="color:#f982f8;text-shadow:-2px -2px 0 #ca6bca,2px -2px 0 #ca6bca,-2px 2px 0 #ca6bca,2px 2px 0 #ca6bca;">t</span><span style="color:#5c5ce5;text-shadow:-2px -2px 0 #343482,2px -2px 0 #343482,-2px 2px 0 #343482,2px 2px 0 #343482;">i</span><span style="color:#81d6f3;text-shadow:-2px -2px 0 #5c99ae,2px -2px 0 #5c99ae,-2px 2px 0 #5c99ae,2px 2px 0 #5c99ae;">c</span><span style="color:#25f46e;text-shadow:-2px -2px 0 #1ec258,2px -2px 0 #1ec258,-2px 2px 0 #1ec258,2px 2px 0 #1ec258;">k</span><span style="color:#fcff64;text-shadow:-2px -2px 0 #a6a842,2px -2px 0 #a6a842,-2px 2px 0 #a6a842,2px 2px 0 #a6a842;">l</span><span style="color:#ff5151;text-shadow:-2px -2px 0 #d24343,2px -2px 0 #d24343,-2px 2px 0 #d24343,2px 2px 0 #d24343;">e</span>
-        </h1>
-    </div>
+		<div class="row">
+			<div style="text-align:center">
+				<h1 class="title">
+					<!-- text-outline is not supported yet... use a trick with text-shadow -->
+					<span
+						style="color:#f982f8;text-shadow:-2px -2px 0 #ca6bca,2px -2px 0 #ca6bca,-2px 2px 0 #ca6bca,2px 2px 0 #ca6bca;">t</span><span
+						style="color:#5c5ce5;text-shadow:-2px -2px 0 #343482,2px -2px 0 #343482,-2px 2px 0 #343482,2px 2px 0 #343482;">i</span><span
+						style="color:#81d6f3;text-shadow:-2px -2px 0 #5c99ae,2px -2px 0 #5c99ae,-2px 2px 0 #5c99ae,2px 2px 0 #5c99ae;">c</span><span
+						style="color:#25f46e;text-shadow:-2px -2px 0 #1ec258,2px -2px 0 #1ec258,-2px 2px 0 #1ec258,2px 2px 0 #1ec258;">k</span><span
+						style="color:#fcff64;text-shadow:-2px -2px 0 #a6a842,2px -2px 0 #a6a842,-2px 2px 0 #a6a842,2px 2px 0 #a6a842;">l</span><span
+						style="color:#ff5151;text-shadow:-2px -2px 0 #d24343,2px -2px 0 #d24343,-2px 2px 0 #d24343,2px 2px 0 #d24343;">e</span>
+				</h1>
+			</div>
 
-    Tickle is a small and portable multiple arcade machine emulator that runs on Linux, OS X, Windows and the Raspberry Pi. It currently supports about 40 games from the 80's.
+			Tickle is a small and portable multiple arcade machine emulator that runs on Linux, OS X, Windows and the
+			Raspberry Pi. It currently supports about 40 games from the 80's.
 
-    <h2>Current version</h2>
+			<h2>Current version</h2>
 
-    <p>Get it <a href="https://github.com/ascottix/tickle">on GitHub</a>.</p>
+			<p>Get it <a href="https://github.com/ascottix/tickle">on GitHub</a>.</p>
 
-    <h2>Version 0.94 (Apr 16, 2011)</h2>
+			<h2>Version 0.94 (Apr 16, 2011)</h2>
 
-    <p>This is the last version with a native UI for Windows and Mac OS X.
+			<p>This is the last version with a native UI for Windows and Mac OS X.
 
-    <p>Tickle 0.94 <a href="https://github.com/ascottix/tickle094">source files</a>.
-</div>
+			<p>Tickle 0.94 <a href="https://github.com/ascottix/tickle094">source files</a>.
+		</div>
 
-<div class="row">
-	<h2>Screenshots</h2>
+		<div class="row">
+			<h2>Screenshots</h2>
 
-	<p>A few screenshots taken from the emulator... can you guess them all?</p>
+			<p>A few screenshots taken from the emulator... can you guess them all?</p>
 
-	<div class="screenshots">
-		<img src="pics/amidars_2.gif" alt="Screenshot from Amidars">
-		<img src="pics/crush_3.gif" alt="Screenshot from Crush Roller">
-		<img src="pics/frogger_2.gif" alt="Screenshot Frogger">
-		<img src="pics/galaxian_2.gif" alt="Screenshot from Galaxian">
-		<img src="pics/pacman_2.gif" alt="Screenshot from Pacman">
-		<img src="pics/pbaction_2.gif" alt="Screenshot from Pinball Action">
-		<img src="pics/pooyan_3.gif" alt="Screenshot from Pooyan">
-		<img src="pics/scramble_2.gif" alt="Screenshot from Scramble">
-		<img src="pics/1942_1.png" alt="Screenshot from 1942">
-		<img src="pics/galaga_1.png" alt="Screenshot from Galaga">
-		<img src="pics/nibbler_1.png" alt="Screenshot from Nibbler">
-		<img src="pics/lrescue_2.gif" alt="Screenshot from Lunar Rescue">
-		<img src="pics/rallyx_1.png" alt="Screenshot from Rally X" class="portrait">
-	</div>
-</div>
+			<div class="screenshots">
+				<img src="pics/amidars_2.gif" alt="Screenshot from Amidars">
+				<img src="pics/crush_3.gif" alt="Screenshot from Crush Roller">
+				<img src="pics/frogger_2.gif" alt="Screenshot Frogger">
+				<img src="pics/galaxian_2.gif" alt="Screenshot from Galaxian">
+				<img src="pics/pacman_2.gif" alt="Screenshot from Pacman">
+				<img src="pics/pbaction_2.gif" alt="Screenshot from Pinball Action">
+				<img src="pics/pooyan_3.gif" alt="Screenshot from Pooyan">
+				<img src="pics/scramble_2.gif" alt="Screenshot from Scramble">
+				<img src="pics/1942_1.png" alt="Screenshot from 1942">
+				<img src="pics/galaga_1.png" alt="Screenshot from Galaga">
+				<img src="pics/nibbler_1.png" alt="Screenshot from Nibbler">
+				<img src="pics/lrescue_2.gif" alt="Screenshot from Lunar Rescue">
+				<img src="pics/eyes_2.gif" alt="Screenshot from Eyes">
+				<img src="pics/jumpshot_2.gif" alt="Screenshot from Jump Shot">
+				<img src="pics/rallyx_1.png" alt="Screenshot from Rally X" class="portrait">
+			</div>
+		</div>
 
-<div class="row">
-    <h2>How to use</h2>
+		<div class="row">
+			<h2>How to use</h2>
 
-    <p>Emulated games usually require a copy of the corresponding ROM
-    files. Tickle uses the same naming convention of the MAME emulator.
-    Required files must be placed in a properly named ZIP file in a
-    subdirectory names "roms" (if sound samples are needed, they must be
-    placed in a subdirectory named "samples").
+			<p>Emulated games usually require a copy of the corresponding ROM
+				files. Tickle uses the same naming convention of the MAME emulator.
+				Required files must be placed in a properly named ZIP file in a
+				subdirectory names "roms" (if sound samples are needed, they must be
+				placed in a subdirectory named "samples").
 
-    <p>If one or more of the required files are missing the program will display an error message but will also offer a choice to continue: this may be used to emulate errors or such, a feature that will be probably
-    tested more in later releases.
+			<p>If one or more of the required files are missing the program will display an error message but will also offer
+				a choice to continue: this may be used to emulate errors or such, a feature that will be probably
+				tested more in later releases.
 
-    <p>Please remember that the ROM files are usually copyrighted material and are not included with this program. Furthermore, they must be <b>never</b> bundled or distributed together with this program in any format or media.
+			<p>Please remember that the ROM files are usually copyrighted material and are not included with this program.
+				Furthermore, they must be <strong>never</strong> bundled or distributed together with this program in any format
+				or media.
 
-    <p>The following table contains a list of all the drivers supported in this release:
+			<p>The following table contains a list of all the drivers supported in this release:
 
-    <p>
-    <table id="drivers" cellspacing="0" class="table table-striped table-bordered">
-    <tbody>
-    <tr><th onclick="sort(0);">Name</th><th onclick="sort(1);">Manufacturer</th><th onclick="sort(2);">Year</th><th onclick="sort(3);">Screen</th><th onclick="sort(4);">Resources</th></tr>
-    </tbody>
-    </table>
-</div>
+			<p>
+			<table id="drivers" cellspacing="0" class="table table-striped table-bordered">
+				<caption>List of drivers supported by the current release</caption>
+				<tbody>
+					<tr>
+						<th scope="col" onclick="sort(0);">Name</th>
+						<th scope="col" onclick="sort(1);">Manufacturer</th>
+						<th scope="col" onclick="sort(2);">Year</th>
+						<th scope="col" onclick="sort(3);">Screen</th>
+						<th scope="col" onclick="sort(4);">Resources</th>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
-<div class="row">
-    <h2>Trivia</h2>
+		<div class="row">
+			<h2>Trivia</h2>
 
-    <p>Tickle 0.94 is built from more than 35,000 lines of C++ code. It can emulate the following chips:
-    <ul>
-    <li>6502 CPU
-    </li><li>8080 CPU
-    </li><li>Z80 CPU
-    </li><li>AY-3-8910 Sound Generator
-    </li><li>Namco Wave Sound Generator
-    </li><li>SN76477 Complex Sound Generator
-    </li></ul>
-    ...plus a <b>lot</b> of custom hardware and discrete components!
-</div>
+			<p>Tickle 0.94 is built from more than 35,000 lines of C++ code. It can emulate the following chips:
+			<ul>
+				<li>6502 CPU
+				<li>8080 CPU
+				<li>Z80 CPU
+				<li>AY-3-8910 Sound Generator
+				<li>Namco Wave Sound Generator
+				<li>SN76477 Complex Sound Generator
+			</ul>
+			...plus a <strong>lot</strong> of custom hardware and discrete components!
+		</div>
 
-<div class="row">
-    <h2>Acknowledgements</h2>
+		<div class="row">
+			<h2>Acknowledgements</h2>
 
-    <p>Tickle includes part of the <a href="http://www.zlib.net/">zlib</a> library, which is Copyright (c) 1995-2012 by Jean-loup Gailly and Mark Adler.
+			<p>Tickle includes part of the <a href="http://www.zlib.net/">zlib</a> library, which is Copyright (c) 1995-2012
+				by Jean-loup Gailly and Mark Adler.
 
-    <p>Since version 0.95 Tickle uses the <a href="http://www.libsdl.org/">Simple DirectMedia Library</a> (SDL), a fantastic cross-platform library for getting access to the system audio, video and input resources.
+			<p>Since version 0.95 Tickle uses the <a href="http://www.libsdl.org/">Simple DirectMedia Library</a> (SDL), a
+				fantastic cross-platform library for getting access to the system audio, video and input resources.
 
-    <p>Most of the information (but no code!) that was necessary to write the emulation drivers comes from studying <a href="http://mamedev.org/">MAME</a> and
-    I would like to thank all of the MAME developers and testers for providing the best emulator out there, and for always keeping it the best.
-</div>
+			<p>Most of the information (but no code!) that was necessary to write the emulation drivers comes from studying 
+				<a href="http://mamedev.org/">MAME</a> and
+				I would like to thank all of the MAME developers and testers for providing the best emulator out there, and for
+				always keeping it the best.
+		</div>
 
-</div> <!-- container -->
+	</div> <!-- container -->
 
 </body>
-</html>
 
+</html>
