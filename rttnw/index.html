@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+    <title>Ray Tracing: The Next Week, in Go</title>
+
+<style>
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+pre {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.image img {
+    border: 1px solid black;
+    margin: 1em 0;
+}
+</style>
+</head>
+
+<body>
+<h1>Ray Tracing: The Next Week, in Go</h1>
+
+<div class="image"><img src="rttnw_cornell_box.png" alt="The Cornell box"></div>
+
+<p>Ray Tracing: The Next Week, in Go</a>, is a Go implementation of the raytracer described in the book <a href="https://raytracing.github.io/books/RayTracingTheNextWeek.html"><cite>Ray Tracing: The Next Week</cite></a> by Peter Shirley, Trevor David Black, Steve Hollasch.
+
+<p>Check it out on <a href="https://github.com/ascottix/ray_tracing_the_next_week">GitHub</a>.
+
+<p>It can render all images described in the book, that's why you'll find some duplicated code.
+
+<p>To generate an image run:
+
+<pre>> go run . [image_number]</pre>
+
+<p>where <i>image_number</i> is a number between 1 and 23.
+
+<p>Output is a file named `out.ppm` in PPM format.
+
+<p>All images are rendered with default parameter values. Different values can only be set by editing the source code.
+
+<p><strong>Note:</strong> to generate some images the file `earthmap.jpg` must be available in the project directory. It can be downloaded directly from the book page (it's image #4).
+
+</body>
+</html>
