@@ -14,6 +14,11 @@ pre {
     font-weight: bold;
 }
 
+.image {
+    float: left;
+    margin-right: 2em;
+}
+
 .image img {
     border: 1px solid black;
     margin: 1em 0;
@@ -24,13 +29,16 @@ pre {
 <body>
 <h1>Ray Tracing: The Next Week, in Go</h1>
 
-<div class="image"><img src="rttnw_cornell_box.png" alt="The Cornell box"></div>
-
 <p>Ray Tracing: The Next Week, in Go</a>, is a Go implementation of the raytracer described in the book <a href="https://raytracing.github.io/books/RayTracingTheNextWeek.html"><cite>Ray Tracing: The Next Week</cite></a> by Peter Shirley, Trevor David Black, Steve Hollasch.
 
-<p>Check it out on <a href="https://github.com/ascottix/ray_tracing_the_next_week">GitHub</a>.
+<p>Check it out <a href="https://github.com/ascottix/ray_tracing_the_next_week">on GitHub</a>.
 
 <p>It can render all images described in the book, that's why you'll find some duplicated code.
+
+<p>Here's a couple (images #21 and #23):
+<div class="image"><img src="rttnw_cornell_box.png" alt="The Cornell box"></div>
+<div class="image"><img src="rttnw_final.png" alt="The Cornell box"></div>
+<div style="clear:both"></div>
 
 <p>To generate an image run:
 
