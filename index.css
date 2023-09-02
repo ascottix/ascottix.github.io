@@ -1,0 +1,19 @@
+.card {
+    margin: 1em;
+    padding-top: 12px;
+    width: 400px;
+}
+
+.btn + .btn {
+    margin-left: 0.5em;
+}
+
+h1 {
+    text-align: center;
+}
+
+span.badge {
+    font-size: 150%;
+    top: 4%;
+    left: 5%;
+}

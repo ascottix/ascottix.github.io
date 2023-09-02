@@ -1,27 +1,97 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
-    <title>Alessandro's projects on GitHub</title>
 
-<style>
-body {
-    font-family: Helvetica, sans-serif;
-}
-</style>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="index.css" rel="stylesheet">
+
+    <title>Alessandro's projects on GitHub</title>
 </head>
 
-<body>
-    <h1>My projects on GitHub</h1>
-    <p><a href="rtiow/index.html">Ray Tracing in One Weekend, in Go</a>, is a Go implementation of the raytracer described in Peter Shirley's book
-        <a href="https://raytracing.github.io/books/RayTracingInOneWeekend.html"><cite>Ray Tracing in One Weekend</cite></a>.
-    <p><a href="rttnw/index.html">Ray Tracing: The Next Week, in Go</a> is a Go implementation of the raytracer described in Peter Shirley's book
-        <a href="https://raytracing.github.io/books/RayTracingTheNextWeek.html"><cite>Ray Tracing: The Next Week</cite></a>.
-    <p><a href="funtracer/index.html">Funtracer</a> is a raytracer written in Go.
-    <p><a href="castduetsolver/index.html">Cast Duet Solver</a> is a solver for the Cast Duet puzzle (<a href="https://ascottix.github.io/castduetsolver/index.html">try it now</a> or <a href="https://github.com/ascottix/castduetsolver">get it from GitHub</a>)
-    <p><a href="tickle/index.html">Tickle</a> is an arcade machine emulator.
-    <p><a href="https://github.com/ascottix/kiwi06d">Kiwi</a> is a chess engine for the Winboard/Xboard protocol.</p>
-    <h1>Blogs</h1>
-    <p><a href="blog/aals/adaptive-area-light-sampling.html">Adaptive area light sampling</a> is a description of the area light sampler in Funtracer.
+<body data-bs-theme="dark">
+    <div class="container">
+        <div class="row">
+            <h1>Alessandro's projects on GitHub</h1>
+        </div>
+        <div class="row">
+            <!-- Ray Tracing in One Weekend, in Go -->
+            <div class="card">
+                <img src="./rtiow/rtiow_final_card.png" class="card-img-top" alt="The final image of the book Ray Tracing in One Weekend">
+                <div class="card-body">
+                    <h5 class="card-title">Ray Tracing in One Weekend, in Go</h5>
+                    <p class="card-text">A Go implementation of the raytracer described in Peter Shirley's book
+                        <a href="https://raytracing.github.io/books/RayTracingInOneWeekend.html"><cite>Ray Tracing in One Weekend</cite></a>.
+                    </p>
+                    <a href="rtiow/index.html" class="btn btn-primary">More...</a>
+                </div>
+            </div>
+            <!-- Ray Tracing: The Next Week, in Go -->
+            <div class="card">
+                <img src="./rttnw/rttnw_cornell_box.png" class="card-img-top" alt="The final image of the book Ray Tracing: The Next Week">
+                <div class="card-body">
+                    <h5 class="card-title">Ray Tracing: The Next Week, in Go</h5>
+                    <p class="card-text">A Go implementation of the raytracer described in Peter Shirley's book
+                        <a href="https://raytracing.github.io/books/RayTracingTheNextWeek.html"><cite>Ray Tracing: The Next Week</cite></a>.
+                    </p>
+                    <a href="rttnw/index.html" class="btn btn-primary">More...</a>
+                </div>
+            </div>
+            <!-- Funtracer -->
+            <div class="card">
+                <img src="./funtracer/casserole.jpg" class="card-img-top" alt="A copper casserole">
+                <div class="card-body">
+                    <h5 class="card-title">Funtracer</h5>
+                    <p class="card-text">A simple but versatile raytracer written in Go, with many interesting features.
+                    </p>
+                    <a href="funtracer/index.html" class="btn btn-primary">More...</a>
+                </div>
+            </div>
+            <!-- Cast Duet solver -->
+            <div class="card">
+                <img src="./castduetsolver/solver.png" class="card-img-top" alt="A rendered image of one step of the puzzle solution">
+                <div class="card-body">
+                    <h5 class="card-title">Cast Duet Solver</h5>
+                    <p class="card-text">A solver for the challenging Cast Duet puzzle. Give it a start position and it will show you how to solve it step by step.
+                    </p>
+                    <a href="castduetsolver/index.html" class="btn btn-primary">Solve!</a>
+                    <a href="https://github.com/ascottix/castduetsolver" class="btn btn-primary">More...</a>
+                </div>
+            </div>
+            <!-- Tickle -->
+            <div class="card">
+                <img src="./tickle/tickle.png" class="card-img-top" alt="A collage of screenshots from some arcade games">
+                <div class="card-body">
+                    <h5 class="card-title">Tickle</h5>
+                    <p class="card-text">An original multiple-arcade multi-plaform emulator that supports about 40 games from the 80's.
+                    </p>
+                    <a href="https://github.com/ascottix/tickle" class="btn btn-primary">More...</a>
+                </div>
+            </div>
+            <!-- Kiwi -->
+            <div class="card">
+                <img src="./kiwi/kiwi_card.jpg" class="card-img-top" alt="A chessboard where Kiwi plays against another engine">
+                <div class="card-body">
+                    <h5 class="card-title">Kiwi</h5>
+                    <p class="card-text">A chess engine for the Winboard/Xboard protocol. It's old and weak now but still very cute!
+                    </p>
+                    <a href="https://github.com/ascottix/kiwi06d" class="btn btn-primary">More...</a>
+                </div>
+            </div>
+            <!-- Blog: Adaptive area sampling -->
+            <div class="card">
+                <span class="position-absolute badge rounded-pill bg-success">Blog</span>
+                <img src="./blog/aals/aals_card.png" class="card-img-top" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">Adaptive area sampling</h5>
+                    <p class="card-text">An interactive description of the algorithm used in Funtracer to sample area lights and create soft shadows.
+                    </p>
+                    <a href="blog/aals/adaptive-area-light-sampling.html" class="btn btn-primary">Read</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
