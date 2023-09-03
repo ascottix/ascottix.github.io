@@ -1,7 +1,12 @@
+:root {
+    --card-width: 400px;
+    --card-padding: 12px;
+}
+
 .card {
     margin: 1em;
-    padding-top: 12px;
-    width: 400px;
+    padding-top: var(--card-padding);
+    width: var(--card-width);
 }
 
 .btn + .btn {
@@ -15,5 +20,15 @@ h1 {
 span.badge {
     font-size: 150%;
     top: 4%;
-    left: 5%;
+    right: 5%;
+    color: black;
+    display: none;
+}
+
+div.image {
+    width: calc(var(--card-width) - 2*var(--card-padding));
+    height: calc(var(--card-width) - 2*var(--card-padding));
+    background-position: 50%;
+    background-size: cover;
+    cursor: pointer;
 }

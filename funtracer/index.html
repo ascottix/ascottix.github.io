@@ -1,38 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
-    <title>Funtracer</title>
 
-<style>
-body {
-    font-family: Helvetica, sans-serif;
-}
-</style>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="../index.css" rel="stylesheet">
+
+    <title>Funtracer gallery</title>
 </head>
 
-<body>
-    <h1>Funtracer</h1>
+<body data-bs-theme="dark">
+    <div class="container">
+        <div class="row">
+            <h1>Funtracer gallery</h1>
+        </div>
+        <div class="row" id="card-container">
+            <!--
+            <div class="card">
+                <a href="casserole.jpg"><div class="image card-img-top"></div></a>
+                <div class="card-body">
+                    <h5 class="card-title">Copper casserole</h5>
+                </div>
+            </div>
+            <div class="card">
+                <a href="dice.png"><div class="image card-img-top"></div></a>
+                <div class="card-body">
+                    <h5 class="card-title">Copper casserole</h5>
+                </div>
+            </div>
+        -->
+        </div>
+    </div>
+    <script>
+        const cardContainer = document.getElementById("card-container");
+        const images = [
+            {"Copper casserole": "casserole.jpg"},
+            {"Dragon": "dragon.png"},
+            {"Dices": "dice.png"},
+            {"Earth": "earth_in_space.png"},
+            {"Teapot": "teapot_v2.png"}
+        ];
 
-    <p>Funtracer is a simple raytracer written in Go.</p>
-
-    <p>Check it out on <a href="https://github.com/ascottix/funtracer">GitHub</a>.</p>
-
-    <p>Here's a few of images generated with the program.
-
-    <p>A copper casserole:</p>
-    <p><img src="https://raw.githubusercontent.com/ascottix/ascottix.github.io/master/funtracer/casserole.jpg" alt="A copper casserole"></p>
-
-    <p>Our little rock:</p>
-    <p><img src="earth_in_space.png" alt="A view of the Earth from space"></p>
-        
-    <p>The famous <a href="https://en.wikipedia.org/wiki/Utah_teapot">Utah teapot</a>:</p>
-    <p><img src="teapot_v2.png" alt="A teapot"></p>
-
-    <p>And some colored dice. Each dice is built with cylinders, spheres and cubes composed in various ways:</p>
-    <p><img src="dice.png" alt="Three dice rolling"></p>
-
-    <p>Ok, one more. I could get this only after implementing the BVH optimization.
-    <p><img src="dragon.png" alt="Stanford dragon model under a spotlight">
+        images.forEach(image => {
+            const imageName = Object.keys(image)[0];
+            const imageUrl = image[imageName];
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+<a href="${imageUrl}"><div class="image card-img-top" style="background-image:url(${imageUrl})"></div></a>
+<div class="card-body" style="text-align: center">
+    <!--<h5 class="card-title">${imageName}</h5>-->
+    ${imageName}
+</div>
+            `;
+            cardContainer.appendChild(card);
+        });
+    </script>
 </body>
+
 </html>
