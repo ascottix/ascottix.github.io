@@ -151,7 +151,6 @@ const Schemas = [
         ]
     }, {
         id: "demo9",
-        mode: 'crypto',
         grid: [
             "ruwxaex ksvaa",
             "fkfzxzl  hitb",
@@ -166,6 +165,7 @@ const Schemas = [
             " zfiwuri  kws",
             "  r gvxbgaxu",
         ],
+        numbers: "crypto",
         hints: {
             1: 13,
             2: 13,
@@ -251,6 +251,110 @@ const Schemas = [
             7: [1, 5, 8],
             8: [2, 7],
             9: [3, 6, 9]
+        }
+    }, {
+        id: "demo14",
+        grid: [
+            'a_a_a_a_C_a_a_a_a_a_a_Ia',
+            'a|U_a_a_a_a_a_S_a_a_aa|a',
+            'a|a|a_a_a_a_a_M_a_aa|a|a',
+            'B|a|a|a_A_a_a_a_aa|a|a|C',
+            'a|a|a|a|a_a_a_aa|P|a|S|a',
+            'a|a|M|a|a|aaa|B|a|R|a|a',
+            'a|E|a|a|_a_R_ |a|a|a|a|a|a',
+            'a|a|a|_a_a_a_S_a|a|a|a|a|a',
+            'S|a|_a_I_a_a_a_N_a|a|a|a|I',
+            'a|_a_T_a_a_a_a_a_P_a|a|a|a',
+            '_a_a_C_a_a_a_a_a_a_U_a|T|a',
+            'a_a_a_a_a_C_a_a_a_a_a_a|a',
+            'GaaaaaGaaaaaa'
+        ],
+        hints: {
+            1: [5, 12],
+            2: [2, 8],
+            3: 8,
+            4: [1, 5, 13],
+            5: [10, 12],
+            6: [3, 9, 11],
+            7: [2, 6],
+            8: 7,
+            9: [1, 4, 8, 13],
+            10: [3, 9],
+            11: [3, 10, 12],
+            12: 6,
+            13: [1, 7, 13]
+        }
+    }, {
+        id: "demo15",
+        grid: [
+            '     a   aaaa a',
+            '     aa aaaaaaa',
+            '  a  aa aaaaaaa',
+            ' aaa aaaaaa aaa',
+            '  aaaaaaaaa  aa',
+            'aaaaaaaaaaaa a ',
+            'aaaaaaaaa      ',
+            ' aaaaaaaaaaaa  ',
+            ' a aaaa aaaaaaa',
+            '    aa   aaaaa '
+        ]
+    }, {
+        id: "demo16",
+        grid: [
+            '_a|aaaaa_aaa',
+            '_a|aa_aaa|_a|a_a',
+            'aaa|_a|aaa_a|_a',
+            'aaaa_aaa|_a|a',
+            'aaa_a|_a|aaaa',
+            'aa_a|_a|aaaa_a',
+            'aa|_a|aaaaa|_a',
+            'aaaa_aaaa|_a',
+            'aa_aa|_a|aaa_a',
+            'aa|a|aaaaa|a'
+        ],
+        numbers: {
+            1: [1,,,,,2],
+            2: [,,3,,,,,,4],
+            3: [,,,,,,5],
+            4: [,,6],
+            5: [7,,,,,,,8],
+            6: [,,,,,,,,9],
+            7: [,,,,,10],
+            8: [,,,,,11],
+            9: [,12,,,,,,,13],
+            10: [,,,,14]
+        }
+    }, {
+        id: "demo17",
+        grid: [
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+            'a|a|aa|a|aa|a|a',
+        ],
+        numbers: {
+            1: [1,,,,,,2],
+            2: [,,,,,,,3],
+            3: [,,,4],
+            4: [,,5],
+            5: [,6,,,,,,,7],
+            6: [,,,,,,,8],
+            7: [,,,,,,,,9],
+            9: [,10,,,,,,,11],
+            11: [12],
+            12: [,,,,,,,,13],
+            13: [,,,,,14],
+            14: [,,15]
         }
     }, {
         author: {
