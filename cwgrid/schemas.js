@@ -469,6 +469,30 @@ const Schemas = [
         },
         notes: "Solve the sudoku, then copy the letters corresponding to the solution numbers in the grid below. You will get a proverb."
     }, {
+        id: "demo22",
+        grid: [
+            'aaaaaaa a aaaaaaa',
+            'aaaaaaaaa aaaaaaa',
+            'aa aaaaaaaaaa a a',
+            'aaa  _a_a_a_a_a_a_aaaaaa',
+            'aa aa|aaaaaa_a| a a ',
+            ' aa a|aaaaaa|a|aaaaa',
+            'aaaaa|aaaaa|aa|aaaaa',
+            ' aaaa|aaaaa|aa|aaaaa',
+            'aaa a|_a_a_a_a_a|_a_a|aaaaa',
+            'aaaa  a a aa aaa ',
+            'aaaaaaaaaaa aaa a',
+            'aaaaaaaaaa aaaaaa',
+            'aa aaaaaaaaaa aaa'
+        ],
+        numbers: {
+            5: [,,,,,1,2,3,4,5,6],
+            6: [,,,,,7,,,,,,8],
+            7: [,,,,,9,,,,,10],
+            8: [,,,,,11,,,,,12],
+            9: [,,,,,13,,,,,14]
+        }
+    }, {
         author: {
             name: 'Alessandro Scotti',
             moniker: 'A. Scotti'
