@@ -217,8 +217,6 @@ function BgDiagramBuilder(options) {
         drawArrow(cx1, cy1, cx2, cy2, mod);
     }
 
-<<<<<<< Updated upstream
-=======
     // Add a double arrow
     function addDoubleArrow(point1, height1, point2, height2, mod) {
         const [cx1, cy1] = getCheckerCenter(point1, height1);
@@ -227,7 +225,6 @@ function BgDiagramBuilder(options) {
         drawDoubleArrow(cx1, cy1, cx2, cy2, mod);
     }
 
->>>>>>> Stashed changes
     // Add a polygon
     function addPolygon(points, mod) {
         const className = 'polygon';
@@ -501,14 +498,11 @@ class BgDiagram {
             bgb.addArrow(p1, h1, p2, h2, classAnnotation);
         }
 
-<<<<<<< Updated upstream
-=======
         function handleDrawDoubleArrow(points) {
             const [[p1, h1], [p2, h2]] = parsePointList(points);
             bgb.addDoubleArrow(p1, h1, p2, h2, classAnnotation);
         }
 
->>>>>>> Stashed changes
         function handleDrawPolygon(points) {
             bgb.addPolygon(parsePointList(points), classAnnotation);
         }
@@ -529,12 +523,9 @@ class BgDiagram {
                 case 'A':
                     handleDrawArrow(annotation);
                     break;
-<<<<<<< Updated upstream
-=======
                 case 'D':
                     handleDrawDoubleArrow(annotation);
                     break;
->>>>>>> Stashed changes
                 case 'P':
                     handleDrawPolygon(annotation);
                     break;
