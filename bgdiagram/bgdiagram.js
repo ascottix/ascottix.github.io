@@ -1,6 +1,6 @@
 /*
     Backgammon diagram generator
-    Copyright (c) 2024 Alessandro Scotti
+    Copyright (c) 2024-2025 Alessandro Scotti
     MIT License
 */
 const CheckerSize = 50;
@@ -8,11 +8,14 @@ const BorderWidth = 2;
 
 /*
     Options:
-    - flipx: home board on the left side
     - scale: scale factor for the SVG output (default: 1)
+    - homeOnLeft: home board on the left side
+    - swapColors: swap player colors (default: false)
 */
 function BgDiagramBuilder(options) {
     options = options || {};
+
+    const swapColors = options.swapColors ? -1 : +1;
 
     const White = +1;
     const Black = -1;
@@ -32,7 +35,7 @@ function BgDiagramBuilder(options) {
     const viewAreaWidth = fullBoardWidth + BorderWidth * 2;
     const centerRightSide = boardWidth + barWidth + BorderWidth / 2;
     const centerLeftSide = -centerRightSide;
-    const [centerBearoffSide, centerCubeSide] = options.flipx ? [centerLeftSide, centerRightSide] : [centerRightSide, centerLeftSide];
+    const [centerBearoffSide, centerCubeSide] = options.homeOnLeft ? [centerLeftSide, centerRightSide] : [centerRightSide, centerLeftSide];
 
     const svg = [];
 
@@ -40,7 +43,7 @@ function BgDiagramBuilder(options) {
     const BemMain = 'bgdiagram';
 
     function getPlayerClass(player) {
-        return (player == White) ? 'white' : 'black';
+        return (player * swapColors == White) ? 'white' : 'black';
     }
 
     function bem(block, modifiers) {
@@ -60,7 +63,7 @@ function BgDiagramBuilder(options) {
     }
 
     function getPointPosition(pos) {
-        return options.flipx ? (pos > 12 ? 37 : 13) - pos : pos;
+        return options.homeOnLeft ? (pos > 12 ? 37 : 13) - pos : pos;
     }
 
     // Return the coordinates of the center for the checker at the specified position:
@@ -168,7 +171,7 @@ function BgDiagramBuilder(options) {
         const sy = edge * pointGap / 2;
         const ey = sy + edge * (pointHeight - 1);
 
-        addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerSize / 2},${sy}" class="${bem('point', pos % 2)}" />`);
+        addSvg(`<polygon points="${x},${ey} ${x + CheckerSize},${ey} ${x + CheckerSize / 2},${sy}" class="${bem('point', pos % 2 ? 'odd' : 'even')}" />`);
 
         addText(x + CheckerSize / 2, ey + edge * CheckerSize * 0.3, getPointPosition(pos), 'point');
     }
@@ -214,6 +217,17 @@ function BgDiagramBuilder(options) {
         drawArrow(cx1, cy1, cx2, cy2, mod);
     }
 
+<<<<<<< Updated upstream
+=======
+    // Add a double arrow
+    function addDoubleArrow(point1, height1, point2, height2, mod) {
+        const [cx1, cy1] = getCheckerCenter(point1, height1);
+        const [cx2, cy2] = getCheckerCenter(point2, height2);
+
+        drawDoubleArrow(cx1, cy1, cx2, cy2, mod);
+    }
+
+>>>>>>> Stashed changes
     // Add a polygon
     function addPolygon(points, mod) {
         const className = 'polygon';
@@ -245,7 +259,7 @@ function BgDiagramBuilder(options) {
 
     // Add a dice to the board, the position range is -2 (closest to the bar) to 3
     function addDice(player, value, pos) {
-        const cx = (options.flipx ? -1 : +1) * player * (CheckerSize * 2.5 + barWidth / 2 + pos * CheckerSize + BorderWidth);
+        const cx = (options.homeOnLeft ? -1 : +1) * player * (CheckerSize * 2.5 + barWidth / 2 + pos * CheckerSize + BorderWidth);
         const hsize = CheckerSize * 0.4;
 
         // Draw an empty dice
@@ -342,6 +356,7 @@ function BgDiagramBuilder(options) {
         addCheckersOffboard,
         addCube,
         addDice,
+        addDoubleArrow,
         addPipsCount,
         addPlayerOnTurnIndicator,
         addPolygon,
@@ -486,6 +501,14 @@ class BgDiagram {
             bgb.addArrow(p1, h1, p2, h2, classAnnotation);
         }
 
+<<<<<<< Updated upstream
+=======
+        function handleDrawDoubleArrow(points) {
+            const [[p1, h1], [p2, h2]] = parsePointList(points);
+            bgb.addDoubleArrow(p1, h1, p2, h2, classAnnotation);
+        }
+
+>>>>>>> Stashed changes
         function handleDrawPolygon(points) {
             bgb.addPolygon(parsePointList(points), classAnnotation);
         }
@@ -506,6 +529,12 @@ class BgDiagram {
                 case 'A':
                     handleDrawArrow(annotation);
                     break;
+<<<<<<< Updated upstream
+=======
+                case 'D':
+                    handleDrawDoubleArrow(annotation);
+                    break;
+>>>>>>> Stashed changes
                 case 'P':
                     handleDrawPolygon(annotation);
                     break;
