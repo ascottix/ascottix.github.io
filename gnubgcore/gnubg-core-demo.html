@@ -43,6 +43,7 @@
                     <option value="">-- Choose --</option>
                     <option value="XGID=aa--BBBB----dE---d-e----B-:0:0:1:00:0:0:0:0:10">Double, pass</option>
                     <option value="XGID=aBaB--C-A---dE--ac-e----B-:0:0:1:00:0:0:0:0:10">No double, take</option>
+                    <option value="XGID=----BCEBB----------Acddd--:0:0:-1:00:0:0:0:0:10">No double, pass</option>
                     <option value="XGID=aa--BBBB----dE---d-e----B-:0:0:1:D:0:0:0:0:10">Just drop it</option>
                     <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10">Not the golden point</option>
                     <option value="XGID=aBaB--C-A---dE--ac-e----B-:0:0:1:42:0:0:0:0:10">How to play this 42?</option>
@@ -111,7 +112,8 @@
                 markdown.push(`| ${action} | ${equity(data.equity[index])} |`);
             });
             markdown.push();
-            markdown.push('Best cube action: ' + actions[best].toLocaleLowerCase() + (best == 0 ? ', take' : ''));
+            markdown.push('Best cube action: ' + actions[best].toLocaleLowerCase() +
+                (best == 0 ? (data.equity[1] < data.equity[2] ? ', take' : ', pass') : ''));
         }
 
         function renderPlayAction(markdown, res) {
