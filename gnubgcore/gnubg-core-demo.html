@@ -48,6 +48,7 @@
                     <option value="XGID=-b----E-C---dEa--c-da---B-:0:0:1:31:0:0:0:0:10">Not the golden point</option>
                     <option value="XGID=aBaB--C-A---dE--ac-e----B-:0:0:1:42:0:0:0:0:10">How to play this 42?</option>
                     <option value="XGID=-b----E-C---eE---cad----B-:0:0:1:65:0:0:0:0:10">Pick and go</option>
+                    <option value="XGID=---B-bD-C--AcC--bb-db---B-:0:0:1:22:0:4:0:7:10">Equity in match play</option>
                 </select>
             </div>
         </div>
@@ -70,7 +71,7 @@
     <script type="module">
         // Note: you need to serve this page (e.g. with "npx serve ."), it doesn't work with file://
         import { BgDiagram } from 'https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@latest/dist/bgdiagram.min.js';
-        import { initGnubgCore } from 'https://cdn.jsdelivr.net/gh/ascottix/gnubg-core@v1.0.6/dist/gnubg-core.js';
+        import { initGnubgCore } from 'https://cdn.jsdelivr.net/gh/ascottix/gnubg-core@v1.0.9/dist/gnubg-core.js';
 
         let currentMarkdown = '';
 
@@ -117,10 +118,30 @@
                 (best == 0 ? (data.equity[1] < data.equity[2] ? ', take' : ', pass') : ''));
         }
 
+        function aggregateConsecutive(arr) {
+            const result = [];
+            let count = 1;
+
+            for (let i = 1; i <= arr.length; i++) {
+                if (arr[i] === arr[i - 1]) {
+                    count++;
+                } else {
+                    result.push(count > 1 ? `${arr[i - 1]}(${count})` : arr[i - 1]);
+                    count = 1;
+                }
+            }
+
+            return result;
+        }
+
+        function formatMove(move) {
+            return aggregateConsecutive(move.split(' ')).join(' ');
+        }
+
         function renderPlayAction(markdown, res) {
             const moves = res.data;
 
-            markdown.push('# ' + moves[0].move);
+            markdown.push('# ' + formatMove(moves[0].move));
             markdown.push('---');
             markdown.push('<table>');
             moves.slice(0, 10).forEach((move, index) => {
@@ -130,7 +151,7 @@
                 }
 
                 markdown.push('<tr>');
-                markdown.push(`<td><span class="fs-3">${move.move}</span></td>`);
+                markdown.push(`<td><span class="fs-3">${formatMove(move.move)}</span></td>`);
                 markdown.push(`<td><span class="fs-3">${move.equity[0].toFixed(3)}</span></td>`);
                 markdown.push('</tr>');
                 markdown.push('<tr>');
