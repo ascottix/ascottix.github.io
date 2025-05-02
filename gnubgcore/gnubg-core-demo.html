@@ -71,7 +71,7 @@
     <script type="module">
         // Note: you need to serve this page (e.g. with "npx serve ."), it doesn't work with file://
         import { BgDiagram } from 'https://cdn.jsdelivr.net/gh/ascottix/bgdiagram@latest/dist/bgdiagram.min.js';
-        import { initGnubgCore } from 'https://cdn.jsdelivr.net/gh/ascottix/gnubg-core@v1.0.9/dist/gnubg-core.js';
+        import { initGnubgCore } from 'https://cdn.jsdelivr.net/gh/ascottix/gnubg-core@v1.0.10/dist/gnubg-core.js';
 
         let currentMarkdown = '';
 
@@ -118,24 +118,47 @@
                 (best == 0 ? (data.equity[1] < data.equity[2] ? ', take' : ', pass') : ''));
         }
 
-        function aggregateConsecutive(arr) {
-            const result = [];
-            let count = 1;
+        // Converts a move to the conventional format
+        function formatMove(move) {
+            let steps = move.split(' ').map(step => {
+                const [from, to] = step.split('/').map(p => parseInt(p));
+                return { from, to, n: 1, cap: step.indexOf('*') > 0 ? 1 : 0 };
+            });
 
-            for (let i = 1; i <= arr.length; i++) {
-                if (arr[i] === arr[i - 1]) {
-                    count++;
-                } else {
-                    result.push(count > 1 ? `${arr[i - 1]}(${count})` : arr[i - 1]);
-                    count = 1;
+            // Sort moves by descending point order
+            steps.sort((a, b) => b.from - a.from || b.to - a.to || b.cap - a.cap);
+
+            // Merge identical moves
+            for (let i = steps.length - 1; i > 0; i--) {
+                if (steps[i].from == steps[i - 1].from && steps[i].to == steps[i - 1].to) {
+                    steps[i - 1].n += steps[i].n;
+                    steps[i] = null;
                 }
             }
 
-            return result;
-        }
+            // Eliminate moves that have become redundant after the previous merge
+            steps = steps.filter(step => step != null);
 
-        function formatMove(move) {
-            return aggregateConsecutive(move.split(' ')).join(' ');
+            // Merge move sequences where a move starts exactly where the previous ends
+            for (let i = steps.length - 1; i > 0; i--) {
+                for (let j = i - 1; j >= 0; j--) {
+                    if (steps[i].from == steps[j].to && steps[i].n >= steps[j].n && !steps[j].cap) {
+                        steps[j].to = steps[i].to;
+                        steps[j].cap = steps[i].cap;
+                        steps[i].n -= steps[j].n;
+                        break;
+                    }
+                }
+            }
+
+            // Eliminate moves that have become redundant after the previous merge
+            steps = steps.filter(step => step.n > 0);
+
+            // Join all steps in a single string
+            const text = steps.map(step => step.from + '/' + step.to + (step.cap ? '*' : '') + (step.n > 1 ? `(${step.n})` : '')).join(' ');
+
+            // Replace 25 and 0 with "bar" and "off"
+            return text.replace(/25/g, 'bar').replace(/\/0/g, '/off');
         }
 
         function renderPlayAction(markdown, res) {
